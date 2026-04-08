@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "projectId": "AID-001",
+    "projectName": "",
+    "createdAt": "",
+    "updatedAt": "2026-04-05T15:33:30.873510+00:00"
+  },
+  "iteration": 2,
+  "consensus": false,
+  "syntaxScore": null,
+  "conflicts": [],
+  "ruleViolations": [],
+  "activePattern": null,
+  "spaces": [],
+  "relations": [],
+  "agentOutputs": {
+    "userRequirements": {
+      "status": "done",
+      "data": {
+        "facilityType": "Metallverarbeitung",
+        "totalArea": 2000,
+        "productionCells": 3,
+        "storage": {
+          "type": "Rohmaterial + Fertigware",
+          "area": 300
+        },
+        "loadingZone": {
+          "truckSpots": 4,
+          "area": 100
+        },
+        "office": {
+          "capacity": 10,
+          "area": 100
+        },
+        "technicalRequirements": [
+          "Deckenhöhe >= 6m",
+          "Bodenlast >= 5t/m2",
+          "400V Anschluss"
+        ]
+      }
+    },
+    "produktionsablauf": {
+      "status": "done",
+      "data": {
+        "processSteps": [
+          "1. Materialannahme (Andockzone → Lager)",
+          "2. Rohmaterialvorbereitung (Lager → Zelle 1)",
+          "3. Schneiden/Fräsen (Zelle 1)",
+          "4. Schweißen (Zelle 2)",
+          "5. Oberflächenbehandlung (Zelle 3)",
+          "6. Qualitätskontrolle (Zwischenlager)",
+          "7. Fertigwarenlagerung (Lager → Andockzone)"
+        ],
+        "materialFlow": {
+          "direction": "Einbahn-Fluss von West nach Ost",
+          "transportSystem": "Fahrerlose Transportsysteme (FTS)",
+          "bufferZones": [
+            "5m² Übergabepuffer zwischen Zelle 1→2",
+            "10m² Klimapuffer vor Oberflächenbehandlung"
+          ]
+        },
+        "recommendedLayout": "FISCHGRAETE",
+        "layoutJustification": "Minimiert Kreuzungspunkte, ermöglicht lineare Kapazitätserweiterung"
+      }
+    },
+    "layout": {
+      "status": "pending",
+      "data": {}
+    },
+    "tragwerk": {
+      "status": "pending",
+      "data": {}
+    },
+    "tga": {
+      "status": "pending",
+      "data": {}
+    }
+  }
+}
