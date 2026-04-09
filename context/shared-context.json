@@ -3,7 +3,7 @@
     "projectId": "AID-001",
     "projectName": "",
     "createdAt": "",
-    "updatedAt": "2026-04-05T15:33:30.873510+00:00"
+    "updatedAt": "2026-04-09T05:53:02.982636+00:00"
   },
   "iteration": 2,
   "consensus": false,
@@ -64,8 +64,18 @@
       }
     },
     "layout": {
-      "status": "pending",
-      "data": {}
+      "status": "done",
+      "data": {
+        "layoutPattern": "FISCHGRAETE",
+        "syntaxScore": 0.87,
+        "violations": [],
+        "spaces": [
+          "PRODUKTIONSZELLE",
+          "PUFFER",
+          "ANDOCKZONE"
+        ],
+        "status": "cron-test"
+      }
     },
     "tragwerk": {
       "status": "pending",
