@@ -1,0 +1,177 @@
+# Masterplanung — Planungsregeln (BauNVO, LBO, DIN 18009)
+# =========================================================
+# Wird von app/agents/masterplan.py geladen.
+# Quellen: BauNVO, LBO BW, DIN 18009, VDI 2411, dreso Planungsstandard
+#
+# Struktur:
+#   grz                   — Grundflächenzahl (BauNVO)
+#   gfz                   — Geschossflächenzahl (BauNVO)
+#   stellplatzschluessel  — LBO-Parkplatznachweispflicht
+#   stellplatz_geometrie  — Maße PKW-Stellplatz (EAR 2005)
+#   erschliessung         — LKW/PKW-Erschließungsmaße
+#   nebenbauten           — Standardgrößen Nebengebäude
+#   gruen                 — Grünflächenanforderungen
+#   abstandsflaechen      — Gebäude- und Grundstücksabstände (LBO)
+#   flaechenbilanz        — Grenzwerte für Bilanz-Warnanzeige
+
+rule_catalog:
+  "1.1":
+    - id: mp_site_geometry_metrics
+      title: "Grundstueckskennwerte"
+      source_ref: "Projekt-Regelkatalog Masterplanung"
+      parameter: "grundstuecksanalyse"
+      value: "Flaeche, Umfang, Seitenverhaeltnis, Kompaktheit, Zufahrten"
+      rule_type: "deterministisch"
+  "1.2":
+    - id: baunvo_grz_ge_gi
+      title: "GRZ-Grenzwert fuer GE/GI"
+      source_ref: "BauNVO, projektbezogen parametriert"
+      parameter: "grz.grenzwert_gi"
+      value: 0.60
+      rule_type: "hart"
+    - id: baunvo_gfz_ge_gi
+      title: "GFZ-Orientierung fuer GE/GI"
+      source_ref: "BauNVO, projektbezogen parametriert"
+      parameter: "gfz.grenzwert_gi"
+      value: 2.40
+      rule_type: "hart"
+    - id: lbo_abstandsflaechen
+      title: "Abstandsflaechen als Baugrenzen-Offset"
+      source_ref: "LBO / Projektstandard"
+      parameter: "abstandsflaechen.standard_m"
+      value: 4.00
+      unit: "m"
+      rule_type: "hart"
+  "1.3":
+    - id: infra_lkw_fahrgasse
+      title: "LKW-Fahrgasse"
+      source_ref: "Projektstandard Verkehr / DIN 14090 als Mindestbezug"
+      parameter: "erschliessung.lkw_fahrgasse_m"
+      value: 6.00
+      unit: "m"
+      rule_type: "hart"
+    - id: infra_lkw_rangiertiefe
+      title: "Rangiertiefe LKW"
+      source_ref: "Projektstandard Logistik"
+      parameter: "erschliessung.lkw_rangiertiefe_m"
+      value: 12.00
+      unit: "m"
+      rule_type: "heuristisch"
+    - id: infra_fire_access
+      title: "Feuerwehrzufahrt"
+      source_ref: "DIN 14090 / Projektstandard"
+      parameter: "erschliessung.feuerwehrzufahrt_breite_m"
+      value: 3.50
+      unit: "m"
+      rule_type: "hart"
+  "1.4":
+    - id: parking_key_industry
+      title: "Stellplatzschluessel Industrie"
+      source_ref: "LBO BW / projektbezogene Annahme"
+      parameter: "stellplatzschluessel"
+      value: "Produktion 1/100 m2, Lager 1/200 m2, Buero 1/30 m2"
+      rule_type: "heuristisch"
+    - id: residual_rectangular_parcels
+      title: "Parzellierung aus Restflaechen"
+      source_ref: "Projekt-Regelkatalog Masterplanung"
+      parameter: "algorithmus.max_rectangles"
+      value: "Restflaechen nach Baugrenzen, Verkehr und Infrastruktur"
+      rule_type: "heuristisch"
+
+grz:
+  grenzwert_gi: 0.60        # GI Gewerbegebiet § 17 BauNVO — harte Grenze
+  grenzwert_ge: 0.60        # GE Gewerbegebiet § 17 BauNVO
+  grenzwert_hard_max: 0.80  # Absolutes Max. inkl. Überschreitung § 17 Abs. 2 BauNVO
+  ziel_empfehlung: 0.45     # Empfohlener Zielwert (dreso Planungsstandard)
+  ziel_min: 0.25            # Planerischer Mindestwert (sehr aufgelockertes Grundstück)
+  ziel_max: 0.70            # Planerischer Maximalwert (vor BauNVO-Grenze)
+  quelle: "§ 17 BauNVO (2017)"
+
+gfz:
+  grenzwert_gi: 2.4         # GI § 17 BauNVO
+  grenzwert_ge: 1.6         # GE § 17 BauNVO
+  orientierungswert: 0.80   # Typischer GFZ für eingeschossige Industriehalle (65% NUF3)
+  quelle: "§ 17 BauNVO (2017)"
+
+stellplatzschluessel:
+  # Orientierungswerte nach LBO BW Anhang — je Nutzungseinheit
+  produktion_je_100m2: 1    # 1 SP je 100 m² Produktionsfläche (NUF 3)
+  lager_je_200m2: 1         # 1 SP je 200 m² Lagerfläche (NUF 4)
+  buero_je_30m2: 1          # 1 SP je 30 m² Bürofläche (NUF 2)
+  sozial_je_50m2: 1         # 1 SP je 50 m² Sozialfläche / Kantine (NUF 7)
+  lkw_stellplatz_min: 2     # Mindestanzahl LKW-Stellplätze
+  quelle: "LBO BW § 37 i.V.m. VwV Stellplätze (2016)"
+
+stellplatz_geometrie:
+  # Regelmaß nach EAR 2005 (Empfehlungen für Anlagen des ruhenden Verkehrs)
+  breite_m: 2.50            # Regelmaß PKW-Stellplatz (Typ II)
+  tiefe_m: 5.00             # Regelmaß senkrecht
+  fahrgang_breite_m: 6.00   # Mindestbreite Fahrgang bei 90°-Aufstellung
+  fahrgang_breite_schraeg_m: 5.50  # Fahrgang bei 60°-Aufstellung
+  lkw_breite_m: 3.50        # LKW-Stellplatz Breite
+  lkw_tiefe_m: 18.00        # LKW-Stellplatz Tiefe (Sattelzug 16.5m + Puffer)
+  quelle: "EAR 2005, DIN 18015-3"
+
+erschliessung:
+  # LKW-Erschließung
+  lkw_rangiertiefe_m: 12.0   # Netto-Rangierfläche vor Rampe/Tor (Sattelzug)
+  lkw_fahrgasse_m: 6.0       # Fahrgasse hinter Rangierzone
+  lkw_streifentiefe_m: 18.0  # Gesamttiefe LKW-Streifen (lkw_rangiertiefe + lkw_fahrgasse)
+  # PKW-Erschließung
+  pkw_streifentiefe_m: 12.0  # 2 × Parkstreifen à 5m + 2m Fahrgang
+  # Zufahrten
+  zufahrtsbreite_lkw_m: 7.50   # Zweistreifige LKW-Zufahrt (empfohlen)
+  zufahrtsbreite_min_m: 6.00   # Einstreifige Zufahrt (Mindest)
+  feuerwehrzufahrt_breite_m: 3.50  # DIN 14090 Feuerwehrzufahrt
+  # Abstandsfläche Hauptgebäude → Grundstücksgrenze
+  abstandsflaeche_m: 4.00
+  quelle: "DIN 14090, RAS-Q, LBO BW § 5, dreso Planungsstandard"
+
+nebenbauten:
+  # Standardgrößen (Überschreibung über streamlit_app.py Checkboxen möglich)
+  pforte:
+    breite_m: 6.0
+    tiefe_m: 5.0
+    farbe: "#4A90D9"
+    beschreibung: "Pforte / Einfahrtskontrolle"
+    prio: 1
+    hinweis: "Immer platziert (Prio 1)"
+  trafo:
+    breite_m: 6.0
+    tiefe_m: 5.0
+    farbe: "#E67E22"
+    beschreibung: "Trafostation / Netzanschluss"
+    prio: 2
+    hinweis: "Pflicht bei eigener Mittelspannungsanlage (≥ 160 kVA)"
+  lagerueberdachung:
+    breite_m: 20.0
+    tiefe_m: 8.0
+    farbe: "#7F8C8D"
+    beschreibung: "Außenlager / Lagerüberdachung"
+    prio: 3
+    hinweis: "Für Großteile, Rohmaterial-Puffer"
+  sozialgebaeude:
+    breite_m: 15.0
+    tiefe_m: 10.0
+    farbe: "#27AE60"
+    beschreibung: "Sozialgebäude (Umkleide, Kantine)"
+    prio: 4
+    hinweis: "ArbStättV: ab 10 Arbeitnehmern erforderlich"
+
+gruen:
+  mindestanteil_pct: 0.10   # Mindest-Grünflächenanteil GI (Orientierungswert LBO/BauNVO)
+  mindestflaeche_m2: 16.0   # Mindestgröße einer zeichnungswürdigen Grünfläche (4×4m)
+  bevorzugt_suedseite: true  # Grün an der der Straße zugewandten Seite
+  quelle: "BauNVO § 9 Abs. 1 Nr. 25, LBO BW § 9"
+
+abstandsflaechen:
+  standard_m: 4.0           # Standard-Abstandsfläche Gebäude → Grundstücksgrenze (h/2, min. 3m)
+  brandwand_m: 0.0          # Mit Brandwand: kein Grenzabstand erforderlich
+  nachbar_min_m: 3.0        # Mindestabstand zu Nachbargebäuden (vereinfacht)
+  quelle: "LBO BW § 5"
+
+flaechenbilanz:
+  # Warngrenzen für die Flächenbilanz-Anzeige
+  grz_warnschwelle: 0.55    # Gelbe Warnung ab dieser GRZ
+  versiegelung_max_pct: 0.85  # Rote Warnung ab dieser Versiegelungsrate
+  gruen_min_pct: 0.10       # Rote Warnung unterhalb dieses Grünflächenanteils

@@ -1,0 +1,21 @@
+cookie:
+  expiry_days: 1
+  key: aid_demo_secret_key_2024
+  name: aid_demo_cookie
+credentials:
+  usernames:
+    admin:
+      email: admin@aid-demo.de
+      name: Administrator
+      password: $2b$12$hzj653yyaFbCI64Ue29PHuzzRP7AfZGsNQKqEuxzzHYPlwzIRQgra
+      role: admin
+    planner:
+      email: planner@aid-demo.de
+      name: Planer
+      password: $2b$12$p9SqRDlQ2F9eSFRDaXGobezA.K21TDW2ud1G3Conr1SRTaaVOjmJK
+      role: planner
+    viewer:
+      email: viewer@aid-demo.de
+      name: Betrachter
+      password: $2b$12$7w9yfaidHr759X9IqXN2he0..ct7b4CSWp60CdJs50FvXsolcDFS.
+      role: viewer

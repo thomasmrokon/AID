@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: transparent; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+      overflow: hidden;
+    }
+    .editor {
+      height: 780px;
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 12px;
+    }
+    .palette {
+      min-width: 0;
+      border: 1px solid #d7dee8;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px;
+      overflow: auto;
+    }
+    .palette h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 1.2;
+      color: #334155;
+    }
+    .palette p {
+      margin: 0 0 10px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #64748b;
+    }
+    .chip-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    .chip-table th {
+      color: #64748b;
+      font-weight: 650;
+      text-align: left;
+      padding: 6px 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .chip-table td {
+      padding: 7px 4px;
+      border-bottom: 1px solid #eef2f7;
+      vertical-align: middle;
+    }
+    .chip-table td:nth-child(2), .chip-table th:nth-child(2) { width: 42px; text-align: center; }
+    .chip-table td:nth-child(3), .chip-table th:nth-child(3) { width: 56px; text-align: center; }
+    .chip-row.active td { background: #f1f5f9; }
+    .chip-row.active.placed .swatch { opacity: 0.55; filter: grayscale(0.35); }
+    .chip-row.placed td { color: #94a3b8; background: #f8fafc; }
+    .chip-row.placed .swatch { opacity: 0.28; filter: grayscale(1); border-color: #94a3b8; box-shadow: none; }
+    .chip-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .chip:active { cursor: grabbing; }
+    .swatch {
+      display: block;
+      border: 2px solid #111827;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+    }
+    .chip.active .swatch { outline: 2px solid rgba(17, 24, 39, 0.18); outline-offset: 2px; }
+
+    .area-summary {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .area-summary h4 {
+      margin: 0 0 7px;
+      font-size: 12px;
+      line-height: 1.2;
+      color: #334155;
+    }
+    .area-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 10.5px;
+    }
+    .area-table th {
+      color: #64748b;
+      font-weight: 650;
+      text-align: left;
+      padding: 5px 3px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: bottom;
+    }
+    .area-table td {
+      padding: 5px 3px;
+      border-bottom: 1px solid #eef2f7;
+      vertical-align: top;
+    }
+    .area-table th:nth-child(1), .area-table td:nth-child(1) { width: 29%; }
+    .area-table th:nth-child(2), .area-table td:nth-child(2) { width: 22%; text-align: right; }
+    .area-table th:nth-child(3), .area-table td:nth-child(3) { width: 22%; text-align: right; }
+    .area-table th:nth-child(4), .area-table td:nth-child(4) { width: 27%; text-align: right; }
+    .area-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .area-negative { color: #b91c1c; }
+    .area-positive { color: #047857; }
+    .stage {
+      position: relative;
+      min-width: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+    .badge {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      padding: 4px 7px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.88);
+      font-size: 12px;
+      color: #334155;
+      pointer-events: none;
+    }
+    .ghost {
+      position: fixed;
+      display: none;
+      z-index: 1000;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(17, 24, 39, 0.9);
+      color: white;
+      font-size: 12px;
+      pointer-events: none;
+      white-space: nowrap;
+      transform: translate(10px, -18px);
+    }
+    .loading, .error {
+      height: 780px;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: system-ui, sans-serif;
+    }
+    .loading { border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; }
+    .error { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <div id="root" class="loading">Canvas-Lageplan wird geladen...</div>
+  <script>
+    const Streamlit = {
+      setComponentReady: () => window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:componentReady", apiVersion: 1 }, "*"),
+      setComponentValue: (value) => window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value, dataType: "json" }, "*"),
+      setFrameHeight: (height) => window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:setFrameHeight", height }, "*"),
+    };
+
+    let payload = null;
+    let canvas = null;
+    let ctx = null;
+    let stage = null;
+    let ghost = null;
+    let tx = null;
+    let drag = null;
+    let screenAnchors = [];
+    let viewport = { x: 0, y: 0, scale: 1, width: 900, height: 760 };
+    const logical = { width: 900, height: 760 };
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch]));
+    }
+
+    function chipSize(area) {
+      const value = Math.max(100, Number(area || 100));
+      return Math.max(22, Math.min(52, Math.round(Math.sqrt(value) / 1.35)));
+    }
+
+    function planChipSize(area) {
+      const value = Math.max(100, Number(area || 100));
+      return Math.max(14, Math.min(28, Math.round(Math.sqrt(value) / 3.2)));
+    }
+
+    function getFunction(functionId) {
+      return (payload.functions || []).find((fn) => fn.id === functionId);
+    }
+
+    function buildTransform() {
+      const b = payload.bounds;
+      const pad = 24;
+      const sx = (logical.width - pad * 2) / Math.max(1, b.maxx - b.minx);
+      const sy = (logical.height - pad * 2) / Math.max(1, b.maxy - b.miny);
+      const scale = Math.min(sx, sy);
+      const ox = (logical.width - (b.maxx - b.minx) * scale) / 2;
+      const oy = (logical.height - (b.maxy - b.miny) * scale) / 2;
+      return {
+        scale,
+        x: (value) => ox + (value - b.minx) * scale,
+        y: (value) => logical.height - oy - (value - b.miny) * scale,
+        invX: (px) => (px - ox) / scale + b.minx,
+        invY: (py) => (logical.height - oy - py) / scale + b.miny,
+      };
+    }
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const rect = canvas.getBoundingClientRect();
+      const cssWidth = Math.max(1, rect.width);
+      const cssHeight = Math.max(1, rect.height);
+      const scale = Math.min(cssWidth / logical.width, cssHeight / logical.height);
+      viewport = {
+        x: (cssWidth - logical.width * scale) / 2,
+        y: (cssHeight - logical.height * scale) / 2,
+        scale,
+        width: logical.width * scale,
+        height: logical.height * scale,
+      };
+      canvas.width = Math.max(1, Math.round(cssWidth * dpr));
+      canvas.height = Math.max(1, Math.round(cssHeight * dpr));
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * viewport.x, dpr * viewport.y);
+      draw();
+    }
+
+    function pathPolygon(points) {
+      if (!points || !points.length) return;
+      ctx.beginPath();
+      points.forEach((p, idx) => {
+        const x = tx.x(p[0]);
+        const y = tx.y(p[1]);
+        if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+    }
+
+    function drawPolygon(points, fill, stroke, lineWidth = 1, dash = []) {
+      if (!points || !points.length) return;
+      ctx.save();
+      pathPolygon(points);
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lineWidth; ctx.setLineDash(dash); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    function drawText(text, x, y, opts = {}) {
+      ctx.save();
+      ctx.fillStyle = opts.color || "#111827";
+      ctx.font = `${opts.weight || 500} ${opts.size || 13}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = opts.align || "center";
+      ctx.textBaseline = opts.baseline || "middle";
+      ctx.fillText(text, x, y);
+      ctx.restore();
+    }
+
+    function drawGridInSite() {
+      const site = payload.site_polygon || [];
+      if (!site.length) return;
+      ctx.save();
+      pathPolygon(site);
+      ctx.clip();
+      ctx.fillStyle = "rgba(100, 116, 139, 0.13)";
+      for (let x = 0; x <= logical.width; x += 10) {
+        for (let y = 0; y <= logical.height; y += 10) {
+          ctx.beginPath(); ctx.arc(x + 1, y + 1, 0.85, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawChip(x, y, size, color, active) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = active ? 3 : 1.5;
+      ctx.beginPath();
+      ctx.roundRect(x - size / 2, y - size / 2, size, size, 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!ctx || !payload) return;
+      tx = buildTransform();
+      screenAnchors = [];
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      ctx.setTransform(dpr * viewport.scale, 0, 0, dpr * viewport.scale, dpr * viewport.x, dpr * viewport.y);
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, logical.width, logical.height);
+      drawPolygon(payload.site_polygon, "#e8eee8", "#1f2937", 2.2);
+      drawGridInSite();
+      if (payload.build_boundary && payload.build_boundary.length) drawPolygon(payload.build_boundary, null, "#64748b", 2, [9, 8]);
+      (payload.roads || []).forEach((r) => {
+        drawPolygon(r.points, "rgba(71, 85, 105, 0.22)", "rgba(51, 65, 85, 0.72)", 1.2, []);
+        if (r.centerline && r.centerline.length > 1) {
+          ctx.save();
+          ctx.strokeStyle = "rgba(15, 23, 42, 0.45)";
+          ctx.lineWidth = 1.1;
+          ctx.setLineDash([6, 5]);
+          ctx.beginPath();
+          r.centerline.forEach((p, idx) => {
+            const x = tx.x(p[0]); const y = tx.y(p[1]);
+            if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+          ctx.restore();
+        }
+      });
+      (payload.clearances || []).forEach((p) => drawPolygon(p.points, null, "rgba(31,41,55,0.28)", 1, [3, 4]));
+      (payload.parcels || []).forEach((p) => {
+        const reduced = p.status === "reduziert";
+        const fill = hexToRgba(p.color || "#4F7CAC", reduced ? 0.32 : 0.46);
+        drawPolygon(p.points, fill, p.color || "#4F7CAC", 1.5, reduced ? [4, 3] : []);
+        const cx = tx.x(p.center[0]); const cy = tx.y(p.center[1]);
+        drawText(p.name, cx, cy - 8, { size: 13 });
+        drawText(`${Math.round(p.actual_area_m2)} m2`, cx, cy + 10, { size: 13 });
+      });
+      (payload.missing || []).forEach((p) => {
+        drawPolygon(p.points, "rgba(185,28,28,0.08)", "#b91c1c", 2, [8, 6]);
+        const cx = tx.x(p.center[0]); const cy = tx.y(p.center[1]);
+        drawText(p.name, cx, cy - 8, { color: "#b91c1c", size: 13 });
+        drawText("nicht platzierbar", cx, cy + 10, { color: "#b91c1c", size: 13 });
+      });
+      (payload.access_points || []).forEach((a) => {
+        const p0 = a.segment[0]; const p1 = a.segment[1];
+        ctx.save();
+        ctx.strokeStyle = a.color || "#b91c1c";
+        ctx.lineWidth = 10;
+        ctx.beginPath(); ctx.moveTo(tx.x(p0[0]), tx.y(p0[1])); ctx.lineTo(tx.x(p1[0]), tx.y(p1[1])); ctx.stroke();
+        ctx.restore();
+        drawText(a.label, tx.x(a.point[0]) + 7, tx.y(a.point[1]) - 12, { color: a.color || "#b91c1c", align: "left", size: 13 });
+      });
+      (payload.functions || []).forEach((fn) => {
+        const placement = payload.placements && payload.placements[fn.id];
+        if (!placement) return;
+        const x = tx.x(placement.anchor[0]);
+        const y = tx.y(placement.anchor[1]);
+        const size = planChipSize(fn.area_m2);
+        const active = fn.id === payload.selected_function_id;
+        drawChip(x, y, size, fn.color, active);
+        screenAnchors.push({ id: fn.id, x, y, size: Math.max(size + 8, 26) });
+      });
+      if (drag && drag.canvasX != null && drag.canvasY != null) {
+        const fn = getFunction(drag.functionId);
+        if (fn) drawChip(drag.canvasX, drag.canvasY, planChipSize(fn.area_m2) + 4, fn.color, true);
+      }
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = String(hex || "#4F7CAC").replace("#", "");
+      const n = parseInt(clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean, 16);
+      const r = (n >> 16) & 255; const g = (n >> 8) & 255; const b = n & 255;
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function canvasPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left - viewport.x) / Math.max(0.001, viewport.scale),
+        y: (event.clientY - rect.top - viewport.y) / Math.max(0.001, viewport.scale),
+      };
+    }
+
+    function isInsideViewport(event) {
+      const rect = canvas.getBoundingClientRect();
+      const cssX = event.clientX - rect.left;
+      const cssY = event.clientY - rect.top;
+      return cssX >= viewport.x && cssX <= viewport.x + viewport.width && cssY >= viewport.y && cssY <= viewport.y + viewport.height;
+    }
+
+    function sendEvent(value) {
+      Streamlit.setComponentValue({ ...value, event_id: `${value.type}:${value.id || value.function_id}:${Date.now()}` });
+    }
+
+    function startDrag(functionId, event, fromCanvas = false) {
+      const fn = getFunction(functionId);
+      if (!fn) return;
+      drag = { functionId, fromCanvas, canvasX: null, canvasY: null };
+      ghost.textContent = fn.name;
+      ghost.style.display = "block";
+      moveGhost(event);
+      sendEvent({ type: "select_function", action: "select_function", function_id: functionId, id: functionId });
+      if (canvas && canvas.setPointerCapture && event.pointerId != null && fromCanvas) canvas.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    }
+
+    function moveGhost(event) {
+      ghost.style.left = `${event.clientX}px`;
+      ghost.style.top = `${event.clientY}px`;
+    }
+
+    function finishDrag(event) {
+      if (!drag) return;
+      if (isInsideViewport(event)) {
+        const p = canvasPoint(event);
+        sendEvent({
+          type: "place_function",
+          action: "place_function",
+          function_id: drag.functionId,
+          id: drag.functionId,
+          x: Number(tx.invX(p.x).toFixed(2)),
+          y: Number(tx.invY(p.y).toFixed(2)),
+        });
+      }
+      drag = null;
+      ghost.style.display = "none";
+      draw();
+    }
+
+    function hitAnchor(point) {
+      for (let i = screenAnchors.length - 1; i >= 0; i -= 1) {
+        const item = screenAnchors[i];
+        if (Math.abs(point.x - item.x) <= item.size / 2 && Math.abs(point.y - item.y) <= item.size / 2) return item.id;
+      }
+      return null;
+    }
+
+    function render(nextPayload) {
+      payload = nextPayload || payload;
+      if (!payload) return;
+      const root = document.getElementById("root");
+      const placedIds = new Set(Object.keys(payload.placements || {}));
+      const chips = (payload.functions || []).map((fn) => {
+        const size = chipSize(fn.area_m2);
+        const active = fn.id === payload.selected_function_id;
+        const placed = placedIds.has(fn.id);
+        return `<tr class="chip-row ${active ? "active" : ""} ${placed ? "placed" : ""}">
+          <td class="chip-name" title="${esc(fn.name)}">${esc(fn.name)}</td>
+          <td>${esc(fn.priority || "-")}</td>
+          <td><button class="chip ${active ? "active" : ""}" data-function-id="${esc(fn.id)}" title="${esc(fn.name)} platzieren">
+            <span class="swatch" style="width:${size}px;height:${size}px;background:${esc(fn.color)}"></span>
+          </button></td>
+        </tr>`;
+      }).join("");
+      const chipTable = chips
+        ? `<table class="chip-table"><thead><tr><th>Funktion</th><th>Prio</th><th>Platzhalter</th></tr></thead><tbody>${chips}</tbody></table>`
+        : `<div class="loading">Keine Funktionen konfiguriert.</div>`;
+      const areaRows = (payload.area_summary || []).map((row) => {
+        const diff = Number(row.diff_m2 || 0);
+        const diffPct = Number(row.diff_pct || 0);
+        const cls = diff < -0.1 ? "area-negative" : (diff > 0.1 ? "area-positive" : "");
+        const sign = diff > 0 ? "+" : "";
+        return `<tr>
+          <td class="area-name" title="${esc(row.function)}">${esc(row.function)}</td>
+          <td>${Math.round(Number(row.required_m2 || 0))} m²</td>
+          <td>${Math.round(Number(row.realized_m2 || 0))} m²</td>
+          <td class="${cls}">${sign}${Math.round(diff)} m² / ${sign}${diffPct.toFixed(1)}%</td>
+        </tr>`;
+      }).join("");
+      const areaTable = areaRows
+        ? `<div class="area-summary"><h4>Flächenbilanz</h4><table class="area-table"><thead><tr><th>Funktion</th><th>SOLL</th><th>IST</th><th>DELTA</th></tr></thead><tbody>${areaRows}</tbody></table></div>`
+        : "";
+      root.className = "";
+      root.innerHTML = `<div class="editor">
+        <aside class="palette">
+          <h3>Funktionsplatzhalter</h3>
+          <p>Platzhalter anfassen, in die Planfläche ziehen und loslassen.</p>
+          ${chipTable}
+          ${areaTable}
+        </aside>
+        <main class="stage" id="stage">
+          <div class="badge">Aktiv: ${esc(payload.active_label || "-")}</div>
+          <canvas id="planCanvas" width="900" height="760"></canvas>
+        </main>
+        <div class="ghost" id="ghost"></div>
+      </div>`;
+      stage = document.getElementById("stage");
+      canvas = document.getElementById("planCanvas");
+      ghost = document.getElementById("ghost");
+      ctx = canvas.getContext("2d");
+      document.querySelectorAll(".chip").forEach((node) => {
+        node.addEventListener("pointerdown", (event) => startDrag(node.dataset.functionId, event, false));
+        node.addEventListener("click", () => sendEvent({ type: "select_function", action: "select_function", function_id: node.dataset.functionId, id: node.dataset.functionId }));
+      });
+      canvas.addEventListener("pointerdown", (event) => {
+        const hit = hitAnchor(canvasPoint(event));
+        if (hit) startDrag(hit, event, true);
+      });
+      window.addEventListener("pointermove", (event) => {
+        if (!drag) return;
+        moveGhost(event);
+        if (isInsideViewport(event)) {
+          const p = canvasPoint(event);
+          drag.canvasX = p.x; drag.canvasY = p.y;
+        } else {
+          drag.canvasX = null; drag.canvasY = null;
+        }
+        draw();
+      });
+      window.addEventListener("pointerup", finishDrag);
+      resizeCanvas();
+      Streamlit.setFrameHeight(780);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("message", (event) => {
+      const data = event.data || {};
+      if (data.type !== "streamlit:render") return;
+      try { render(data.args && data.args.payload); }
+      catch (error) {
+        const root = document.getElementById("root");
+        root.className = "error";
+        root.innerHTML = `Canvas-Lageplan konnte nicht gerendert werden:<br>${esc(error && error.message ? error.message : error)}`;
+        Streamlit.setFrameHeight(780);
+      }
+    });
+    function ready() { Streamlit.setComponentReady(); Streamlit.setFrameHeight(780); }
+    ready();
+    window.addEventListener("load", ready);
+    setTimeout(ready, 100); setTimeout(ready, 500); setTimeout(ready, 1500);
+  </script>
+</body>
+</html>

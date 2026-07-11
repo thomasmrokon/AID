@@ -1,0 +1,53 @@
+# Quellen: DIN EN 1990, DIN EN 1991, Erfahrungswerte Stahlhallenbau DE
+
+typologien:
+  stahl:
+    label: "Stahlbau"
+    max_spannweite_m: 30
+    gewicht_kg_m2: 35
+    traufhoehe_standard_m: 8.0
+    feuerwiderstand: "R30"
+    quelle: "DIN EN 1993"
+  stahlbeton:
+    label: "Stahlbetonbau"
+    max_spannweite_m: 20
+    gewicht_kg_m2: 80
+    traufhoehe_standard_m: 7.0
+    feuerwiderstand: "R90"
+    quelle: "DIN EN 1992"
+  holz:
+    label: "Holzbau (Brettschichtholz)"
+    max_spannweite_m: 25
+    gewicht_kg_m2: 25
+    traufhoehe_standard_m: 8.0
+    feuerwiderstand: "R30"
+    quelle: "DIN EN 1995"
+  hybrid:
+    label: "Hybrid (Stahl + Holz)"
+    max_spannweite_m: 28
+    gewicht_kg_m2: 30
+    traufhoehe_standard_m: 8.0
+    feuerwiderstand: "R30"
+    quelle: "DIN EN 1990"
+
+lastklassen:
+  leicht:
+    label: "Leicht ≤5 kN/m²"
+    bodenbelastung_kn_m2: 5
+    fundamenttiefe_m: 0.8
+    quelle: "DIN EN 1991-1-1"
+  mittel:
+    label: "Mittel ≤10 kN/m²"
+    bodenbelastung_kn_m2: 10
+    fundamenttiefe_m: 1.0
+    quelle: "DIN EN 1991-1-1"
+  schwer:
+    label: "Schwer ≤20 kN/m²"
+    bodenbelastung_kn_m2: 20
+    fundamenttiefe_m: 1.2
+    quelle: "DIN EN 1991-1-1"
+  kran:
+    label: "Kranbahn"
+    bodenbelastung_kn_m2: 50
+    fundamenttiefe_m: 1.5
+    quelle: "DIN EN 1991-3"

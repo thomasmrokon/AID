@@ -1,0 +1,213 @@
+# AID Demo — Planungskonventionen mit Wertebereichen
+# Quellen: Erfahrungswerte, VDI-Richtlinien, dreso Planungsstandard
+# Der LLM-Planungsrat waehlt aus diesen Bereichen basierend auf Briefing und Variantengewichtung.
+
+tragwerk:
+  raster_x_m:
+    default: 18
+    range: [12, 18, 24, 27]
+    einheit: "m"
+    beschreibung: "Stuetzenraster in Hallenlängsrichtung"
+    treiber:
+      kranbahn_erforderlich: 24
+      schwerkran_ueber_20t: 27
+      hochregallager: 24
+      nur_buero_anbau: 12
+      standard_produktion: 18
+    quelle: "Erfahrungswert Stahlhallenbau DE"
+
+  raster_y_m:
+    default: 12
+    range: [6, 8, 12]
+    einheit: "m"
+    beschreibung: "Stuetzenraster quer zur Hallenlängsrichtung"
+    treiber:
+      standard: 12
+      kleinere_halle_unter_2000m2: 8
+      sehr_kleine_halle: 6
+    quelle: "Erfahrungswert Stahlhallenbau DE"
+
+  traufhoehe_m:
+    default: 8.0
+    range: [6.0, 8.0, 10.0, 12.0, 18.0]
+    einheit: "m"
+    beschreibung: "Lichte Hallenhöhe bis Unterkante Dachkonstruktion"
+    treiber:
+      standard_produktion: 8.0
+      kranbahn_bis_10t: 10.0
+      kranbahn_ueber_10t: 12.0
+      hochregallager: 18.0
+      buero_geschossig: 3.5
+    quelle: "Erfahrungswert Industriebau"
+
+  bodenbelastung_kn_m2:
+    default: 5.0
+    range: [3.5, 5.0, 7.5, 10.0, 15.0]
+    einheit: "kN/m²"
+    beschreibung: "Nutzlast Hallenboden"
+    treiber:
+      buero: 3.5
+      leichte_produktion: 5.0
+      schwere_produktion: 7.5
+      hochregallager: 10.0
+      datacenter_serverracks: 12.0
+    quelle: "DIN EN 1991-1-1 (Eurocode 1)"
+
+  max_aspect_ratio:
+    default: 4.0
+    description: "Maximales Seitenverhältnis einer Funktionszone (Breite/Tiefe oder umgekehrt)"
+    range: [2.0, 6.0]
+    einheit: "dimensionslos"
+
+logistik:
+  materialfluss_max_laenge_m:
+    default: 150
+    range: [80, 120, 150, 200]
+    einheit: "m"
+    beschreibung: "Empfohlene Maximallänge des Materialflusspfads WE bis Versand"
+    treiber:
+      kleine_produktion: 80
+      mittlere_produktion: 120
+      grosse_produktion: 150
+      logistikzentrum: 200
+    quelle: "VDI 2411 (Richtwert)"
+
+  rangierflaeche_tiefe_m:
+    default: 35
+    range: [25, 35, 40]
+    einheit: "m"
+    beschreibung: "Freifläche vor Rampen für LKW-Manöver"
+    treiber:
+      klein_lkw_bis_7t: 25
+      standard_lkw_bis_18t: 35
+      sattelzug_bis_40t: 40
+    quelle: "RASt 06 / EAR 05"
+
+  andockstellen_we_min:
+    default: 2
+    range: [1, 2, 4, 6, 8]
+    beschreibung: "Mindestanzahl Andockstellen Wareneingang"
+    treiber:
+      kleine_produktion: 2
+      mittlere_produktion: 3
+      logistikzentrum: 6
+    quelle: "dreso Planungsstandard"
+
+  andockstellen_versand_min:
+    default: 2
+    range: [1, 2, 4, 6, 10]
+    beschreibung: "Mindestanzahl Andockstellen Versand"
+    treiber:
+      kleine_produktion: 2
+      mittlere_produktion: 3
+      logistikzentrum: 8
+    quelle: "dreso Planungsstandard"
+
+  quergangbreite_m:
+    default: 4.0
+    range: [3.0, 4.0, 5.0, 6.0]
+    einheit: "m"
+    beschreibung: "Breite der Fahrgassen im Lager (Gegenverkehr Stapler)"
+    treiber:
+      handwagen: 3.0
+      gegenlaeufer_stapler: 4.0
+      schmalgangstapler: 3.0
+      hochhubstapler: 5.0
+    quelle: "VDI 3657"
+
+erschliessung:
+  pkw_stellplaetze_je_100m2_buero:
+    default: 3
+    range: [2, 3, 4]
+    beschreibung: "PKW-Stellplaetze je 100 m² Bürofläche"
+    quelle: "Stellplatzsatzung (kommunal — Richtwert)"
+
+  lkw_stellplaetze_je_andockstelle:
+    default: 2
+    range: [1, 2, 3]
+    beschreibung: "Wartestellplaetze je Andockstelle"
+    quelle: "dreso Planungsstandard"
+
+  erschliessungsbreite_haupt_m:
+    default: 6.0
+    range: [4.5, 6.0, 7.5]
+    einheit: "m"
+    beschreibung: "Breite der internen Haupterschliessungsachse (Korridor)"
+    treiber:
+      fussgaenger: 4.5
+      stapler_einrichtung: 6.0
+      stapler_gegenverkehr: 7.5
+    quelle: "dreso Planungsstandard"
+
+erweiterbarkeit:
+  freie_fassade_min_pct:
+    default: 0.30
+    range: [0.20, 0.30, 0.40, 0.50]
+    einheit: "Anteil der Erweiterungsfassade"
+    beschreibung: "Mindestanteil der Fassade der für Erweiterung frei bleiben soll"
+    treiber:
+      produktion_stabil: 0.20
+      produktion_wachstum: 0.30
+      logistik: 0.40
+      data_center: 0.50
+    quelle: "dreso Planungsstandard"
+
+  erweiterungsrichtung:
+    default: "Ost"
+    optionen: ["Ost", "West", "Nord", "Sued"]
+    beschreibung: "Bevorzugte Richtung fuer Gebaeudeerweiterung"
+    hinweis: "Abhaengig von Grundstueckszuschnitt, Erschliessung, Himmelsrichtung"
+    quelle: "Briefing-abhaengig"
+
+  neutrale_fassade_technik:
+    default: true
+    beschreibung: "TGA-Einheiten nicht an der Erweiterungsfassade platzieren"
+    quelle: "dreso Planungsstandard"
+
+datacenter:
+  pue_zielwert:
+    default: 1.4
+    range: [1.2, 1.4, 1.6, 2.0]
+    beschreibung: "Power Usage Effectiveness — Verhältnis Gesamt-/IT-Energie"
+    treiber:
+      hyperscale: 1.2
+      modernes_colocation: 1.4
+      aelteres_dc: 1.6
+    quelle: "Green Grid / EU Code of Conduct"
+
+  kuehlung_typ:
+    default: "Luftkuehlung"
+    optionen: ["Luftkuehlung", "Fluessigkuehlung", "Hybrid"]
+    treiber:
+      it_last_unter_500kw: "Luftkuehlung"
+      it_last_500_bis_2000kw: "Hybrid"
+      it_last_ueber_2000kw: "Fluessigkuehlung"
+    quelle: "ASHRAE TC9.9"
+
+  sicherheitszone_tiefe_m:
+    default: 6.0
+    range: [4.0, 6.0, 10.0]
+    einheit: "m"
+    beschreibung: "Perimeterschutz-Abstand Einzaeunung zu Gebaeude"
+    treiber:
+      standard: 6.0
+      erhoehte_sicherheit: 10.0
+    quelle: "BSI IT-Grundschutz / EN 50600"
+
+lichte_raumhoehe_m:
+  default:
+    NUF 2: 3.0      # Büro/Verwaltung — ArbStättV §6: min. 2,5m, Standard 3,0m
+    NUF 3: 8.0      # Produktion (Leicht) — DIN 277
+    NUF 4: 10.0     # Lager/Logistik — Hochregallager-Mindest
+    NUF 7: 2.75     # Sozial (WC, Umkleide) — ArbStättV
+    TF: 4.0         # Technikraum — Platzbedarf TGA
+    VF: 0.0         # Erschließung — keine Höhe (Bodenplatte)
+  nutzungstyp_overrides:
+    Produktion:
+      NUF 3: 8.0    # leichte Produktion
+    Logistik:
+      NUF 4: 10.0   # Standard-Hochregallager
+    Data Center:
+      NUF 3: 4.5    # IT-Halle (Serverracks ca. 2,4m + Puffer)
+      TF: 5.0       # USV, Kältemaschinen brauchen mehr Höhe
+  quelle: "ArbStättV §6, DIN 277, VDI 2050"

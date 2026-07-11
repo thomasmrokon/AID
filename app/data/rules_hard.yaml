@@ -1,0 +1,94 @@
+# AID Demo — Gesetzlich bindende Anforderungen
+# Quellen: ArbStättV, MBO, LBO, DIN, VdS
+# Diese Werte sind NICHT durch den LLM-Planungsrat veraenderbar.
+# Kompensationsmaßnahmen koennen das Limit verschieben — das LLM entscheidet ob sie sinnvoll sind.
+
+brandschutz:
+  fluchtweg_max_laenge_m:
+    wert: 35
+    quelle: "ArbStättV §15 Abs. 1"
+    kompensation: null
+
+  fluchtweg_breite_min_m:
+    wert: 1.2
+    quelle: "ArbStättV §15 Abs. 4"
+    kompensation: null
+
+  brandabschnitt_max_m2:
+    wert: 5000
+    quelle: "MBO §40 Abs. 1"
+    kompensation:
+      massnahme: "Sprinkleranlage nach VdS CEA 4001"
+      wert_mit_kompensation: 10000
+      hinweis: "Genehmigungspflichtige Abweichung — Behoerdenabstimmung erforderlich"
+
+  brandabschnitt_max_m2_logistik:
+    wert: 10000
+    quelle: "MBO §40 + VdS (Sprinkler Standard bei Logistik)"
+    kompensation: null
+
+  feuerwehrzufahrt_breite_min_m:
+    wert: 3.5
+    quelle: "DIN 14090"
+    kompensation: null
+
+  feuerwehrzufahrt_abstand_max_m:
+    wert: 50
+    quelle: "DIN 14090 — max. 50 m zur naechsten Zugangsoeffnung"
+    kompensation: null
+
+  anzahl_ausgaenge_min:
+    wert: 2
+    quelle: "MBO §35 Abs. 1"
+    logistik_gross: 4
+    kompensation: null
+
+arbeitsstaetten:
+  raumhoehe_min_m:
+    wert: 2.5
+    quelle: "ArbStättV §6"
+    kompensation: null
+
+  lichtstaerke_buero_min_lux:
+    wert: 500
+    quelle: "ASR A3.4 Tab. 1"
+    kompensation: null
+
+  lichtstaerke_produktion_min_lux:
+    wert: 300
+    quelle: "ASR A3.4 Tab. 1"
+    kompensation: null
+
+  lichtstaerke_lager_min_lux:
+    wert: 200
+    quelle: "ASR A3.4 Tab. 1"
+    kompensation: null
+
+  gangbreite_min_m:
+    wert: 1.0
+    quelle: "ArbStättV Anhang 1.8"
+    kompensation: null
+
+  notausgang_max_entfernung_m:
+    wert: 35
+    quelle: "ArbStättV §4 i.V.m. ASR A2.3"
+    kompensation: null
+
+abstandsflaechen:
+  abstand_nachbargrenze_min_m:
+    wert: 3.0
+    quelle: "MBO §6 (Regelabstand H/3, mind. 3 m)"
+    kompensation:
+      massnahme: "Brandwand an der Grenze (§30 MBO)"
+      wert_mit_kompensation: 0.0
+
+datacenter:
+  tier_iii_redundanz:
+    n_plus_1: true
+    quelle: "Uptime Institute Tier Standard III"
+    kompensation: null
+
+  externe_einspeisungen_min:
+    wert: 2
+    quelle: "Uptime Institute Tier III — zwei unabhaengige Netzzugaenge"
+    kompensation: null

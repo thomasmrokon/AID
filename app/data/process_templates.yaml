@@ -1,0 +1,80 @@
+produktion:
+  linienproduktion:
+    beschreibung: "Taktgebundene Linienfertigung"
+    schritte:
+      - name: "Rohzuschnitt"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.15
+        min_breite_m: 12
+        adj_next: 0.9
+      - name: "Bearbeitung"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.35
+        min_breite_m: 18
+        adj_next: 0.85
+      - name: "Montage"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.35
+        min_breite_m: 18
+        adj_next: 0.8
+      - name: "Qualitätsprüfung"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.15
+        min_breite_m: 9
+        adj_next: null
+  u_fertigung:
+    beschreibung: "U-förmige Flussfertigung"
+    schritte:
+      - name: "Wareneingangsnah"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.30
+        min_breite_m: 15
+        adj_next: 0.9
+      - name: "Hauptbearbeitung"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.40
+        min_breite_m: 20
+        adj_next: 0.9
+      - name: "Warenausgangsnah"
+        din_kategorie: "NUF 3"
+        flaeche_pct: 0.30
+        min_breite_m: 15
+        adj_next: null
+
+logistik:
+  cross_docking:
+    beschreibung: "Durchlager / Cross-Docking"
+    schritte:
+      - name: "Entladung"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.30
+        min_breite_m: 10
+        adj_next: 0.9
+      - name: "Sortierung"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.40
+        min_breite_m: 15
+        adj_next: 0.9
+      - name: "Beladung"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.30
+        min_breite_m: 10
+        adj_next: null
+  linienlagerung:
+    beschreibung: "Längsgerichtetes Blocklager"
+    schritte:
+      - name: "Vorpuffer"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.20
+        min_breite_m: 12
+        adj_next: 0.8
+      - name: "Hauptlager"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.60
+        min_breite_m: 20
+        adj_next: 0.8
+      - name: "Nachpuffer"
+        din_kategorie: "NUF 4"
+        flaeche_pct: 0.20
+        min_breite_m: 12
+        adj_next: null

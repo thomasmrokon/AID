@@ -1,0 +1,38 @@
+{
+  "folders": [
+    {
+      "name": "Claude Code (main — Layout & Architektur)",
+      "path": "c:/DEV/dreso-industriebau-demo"
+    },
+    {
+      "name": "Copilot (viz — Visualisierung & Evaluation)",
+      "path": "c:/DEV/dreso-copilot"
+    },
+    {
+      "name": "Gemini (rules — Regelwerk & LLM-Agenten)",
+      "path": "c:/DEV/dreso-gemini"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": false,
+    "python.defaultInterpreterPath": "C:/Users/thoma/AppData/Local/Programs/Python/Python311/python.exe",
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/outputs/*.png": false
+    },
+    "editor.rulers": [100],
+    "search.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "anthropic.claude-code",
+      "github.copilot",
+      "github.copilot-chat",
+      "google-cloud-tools.cloudcode"
+    ]
+  }
+}

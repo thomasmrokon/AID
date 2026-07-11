@@ -1,0 +1,241 @@
+# Konfiguration der Gebäudetechnik (MEP) Gewerke und Auslegungswerte
+# Quellen: DIN VDE, DIN EN 50173, DIN EN 16798-1, DIN EN 12845, etc.
+
+gewerke:
+  elektro_stark:
+    label: "Starkstrom / Elektro"
+    einheit: "kW"
+    anforderungen:
+      NUF_2:
+        stufe: required
+        w_pro_m2: 30
+        norm: "DIN VDE 0100-520, ArbStättV §12"
+      NUF_3:
+        stufe: required
+        w_pro_m2: 80
+        norm: "DIN VDE 0100-520, DGUV V3"
+      NUF_4:
+        stufe: required
+        w_pro_m2: 25
+        norm: "DIN VDE 0100-520"
+      NUF_7:
+        stufe: required
+        w_pro_m2: 20
+        norm: "DIN VDE 0100-520"
+      TF:
+        stufe: required
+        w_pro_m2: 200
+        norm: "DIN VDE 0100-710"
+      VF:
+        stufe: standard
+        w_pro_m2: 15
+        norm: "DIN VDE 0100"
+
+  daten_it:
+    label: "Daten / IT"
+    einheit: "Ports"
+    anforderungen:
+      NUF_2:
+        stufe: standard
+        ports_pro_100m2: 4
+        norm: "DIN EN 50173"
+      NUF_3:
+        stufe: optional
+        ports_pro_100m2: 2
+        norm: "DIN EN 50173"
+      NUF_4:
+        stufe: standard
+        ports_pro_100m2: 2
+        norm: "DIN EN 50173"
+      NUF_7:
+        stufe: none
+        ports_pro_100m2: 0
+        norm: "DIN EN 50173"
+      TF:
+        stufe: required
+        ports_pro_100m2: 10
+        norm: "DIN EN 50173"
+      VF:
+        stufe: none
+        ports_pro_100m2: 0
+        norm: "-"
+
+  lueftung_rlt:
+    label: "Lüftung / RLT"
+    einheit: "m³/s"
+    anforderungen:
+      NUF_2:
+        stufe: required
+        luftwechsel_h: 4.0
+        norm: "DIN EN 16798-1, ASR A3.6"
+      NUF_3:
+        stufe: required
+        luftwechsel_h: 6.0
+        norm: "DIN EN 16798-1, ASR A3.6"
+      NUF_4:
+        stufe: standard
+        luftwechsel_h: 2.0
+        norm: "DIN EN 16798-1"
+      NUF_7:
+        stufe: optional
+        luftwechsel_h: 1.0
+        norm: "DIN EN 16798-1"
+      TF:
+        stufe: required
+        luftwechsel_h: 8.0
+        norm: "DIN EN 16798-1"
+      VF:
+        stufe: standard
+        luftwechsel_h: 1.0
+        norm: "DIN EN 16798-1"
+
+  druckluft:
+    label: "Druckluftversorgung"
+    einheit: "bar·m³/h"
+    anforderungen:
+      NUF_2:
+        stufe: standard
+        kapazitaet_pro_m2: 0.5
+        norm: "ISO 8573"
+      NUF_3:
+        stufe: standard  # User-Toggle: Druckluft ist in Produktion üblich, aber nicht normativ vorgeschrieben
+        kapazitaet_pro_m2: 2.0
+        norm: "ISO 8573"
+      NUF_4:
+        stufe: optional
+        kapazitaet_pro_m2: 0.1
+        norm: "ISO 8573"
+      NUF_7:
+        stufe: none
+        kapazitaet_pro_m2: 0
+        norm: "-"
+      TF:
+        stufe: standard
+        kapazitaet_pro_m2: 0.5
+        norm: "ISO 8573"
+      VF:
+        stufe: none
+        kapazitaet_pro_m2: 0
+        norm: "-"
+
+  wasser_trinkwasser:
+    label: "Trinkwasser"
+    einheit: "l/h"
+    anforderungen:
+      NUF_2:
+        stufe: standard
+        liter_pro_h_m2: 0.5
+        norm: "DIN 1988-200"
+      NUF_3:
+        stufe: standard
+        liter_pro_h_m2: 1.0
+        norm: "DIN 1988-200"
+      NUF_4:
+        stufe: required
+        liter_pro_h_m2: 2.0
+        norm: "DIN 1988-200"
+      NUF_7:
+        stufe: standard
+        liter_pro_h_m2: 0.2
+        norm: "DIN 1988-200"
+      TF:
+        stufe: standard
+        liter_pro_h_m2: 0.5
+        norm: "DIN 1988-200"
+      VF:
+        stufe: none
+        liter_pro_h_m2: 0
+        norm: "-"
+
+  abwasser:
+    label: "Abwasser"
+    einheit: "l/h"
+    anforderungen:
+      NUF_2:
+        stufe: standard
+        liter_pro_h_m2: 0.5
+        norm: "DIN EN 12056"
+      NUF_3:
+        stufe: standard
+        liter_pro_h_m2: 1.0
+        norm: "DIN EN 12056"
+      NUF_4:
+        stufe: required
+        liter_pro_h_m2: 2.0
+        norm: "DIN EN 12056"
+      NUF_7:
+        stufe: standard
+        liter_pro_h_m2: 0.2
+        norm: "DIN EN 12056"
+      TF:
+        stufe: standard
+        liter_pro_h_m2: 0.5
+        norm: "DIN EN 12056"
+      VF:
+        stufe: none
+        liter_pro_h_m2: 0
+        norm: "-"
+
+  sprinkler:
+    label: "Sprinkleranlage"
+    einheit: "Köpfe"
+    anforderungen:
+      NUF_2:
+        stufe: standard  # User-Toggle: ON/OFF moeglich (VdS CEA 4001: Pflicht ab Lagerhöhe >7,5m)
+        m2_pro_kopf: 12.0
+        norm: "DIN EN 12845, VdS 2815"
+      NUF_3:
+        stufe: standard
+        m2_pro_kopf: 9.0
+        norm: "DIN EN 12845, VdS 2815"
+      NUF_4:
+        stufe: standard
+        m2_pro_kopf: 12.0
+        norm: "DIN EN 12845, VdS 2815"
+      NUF_7:
+        stufe: standard
+        m2_pro_kopf: 9.0
+        norm: "DIN EN 12845, VdS 2815"
+      TF:
+        stufe: standard
+        m2_pro_kopf: 12.0
+        norm: "DIN EN 12845, VdS 2815"
+      VF:
+        stufe: standard
+        m2_pro_kopf: 12.0
+        norm: "DIN EN 12845, VdS 2815"
+
+  kaelte:
+    label: "Kälteanlage"
+    einheit: "kW"
+    anforderungen:
+      NUF_2:
+        stufe: standard
+        kw_pro_m2: 0.05
+        norm: "DIN EN 378"
+      NUF_3:
+        stufe: optional  # User-Toggle: Kälte in Produktion nur bei Bedarf (Lebensmittel, Pharma etc.)
+        kw_pro_m2: 0.1
+        norm: "DIN EN 378"
+      NUF_4:
+        stufe: optional
+        kw_pro_m2: 0.02
+        norm: "DIN EN 378"
+      NUF_7:
+        stufe: standard
+        kw_pro_m2: 0.03
+        norm: "DIN EN 378"
+      TF:
+        stufe: optional  # User-Toggle: Kältemaschine nur wenn Kaelte-Gewerk aktiv
+        kw_pro_m2: 0.15
+        norm: "DIN EN 378"
+      VF:
+        stufe: none
+        kw_pro_m2: 0
+        norm: "-"
+
+trassen_defaults:
+  backbone_breite_m: 0.6
+  abzweig_breite_m: 0.4
+  hoehe_ueber_boden_m: 3.0
+  mindestabstand_wand_m: 0.3

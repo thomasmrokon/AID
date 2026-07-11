@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Industriegebiet Mainz-Hechtsheim, Flur 12",
+        "flurstueck": "1247/3",
+        "gemeinde": "Mainz",
+        "gemarkung": "Hechtsheim",
+        "nutzung": "Gewerbe / Industrie (GI)",
+        "flaeche_m2": 9600,
+        "breite_m": 120,
+        "tiefe_m": 80,
+        "grundwasserschutz": false,
+        "bebauungsplan": "GI-7 Hechtsheim",
+        "grz_max": 0.8,
+        "gfz_max": 2.4,
+        "note": "Stufe-1-Demo: simuliertes Flurstück – Koordinaten vereinfacht"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [8.2340, 49.9700],
+            [8.2448, 49.9700],
+            [8.2448, 49.9772],
+            [8.2340, 49.9772],
+            [8.2340, 49.9700]
+          ]
+        ]
+      }
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:EPSG::4326" }
+  }
+}

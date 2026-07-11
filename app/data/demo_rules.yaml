@@ -1,0 +1,113 @@
+# AID Demo – Regelsets je Nutzungstyp
+# Jeder Eintrag entspricht einer prüfbaren Norm- oder Planungsanforderung.
+# Der Rule-Agent lädt den typspezifischen Block; der Evaluation-Agent prüft die Regeln.
+
+# ============================================================
+# TYP 1: PRODUKTION
+# ============================================================
+produktion:
+
+  tragwerk:
+    raster_standard_x_m: 18        # Stützenraster Standard
+    raster_standard_y_m: 12
+    raster_kran_x_m: 24            # Erweitertes Raster bei Kranbahn
+    raster_kran_y_m: 12
+    traufhoehe_min_m: 8.0
+    lichte_raumhoehe_m: 8.0
+    traufhoehe_kran_m: 10.0
+
+  brandschutz:
+    brandabschnitt_max_m2: 5000    # Ohne Sprinkler; mit Sprinkler bis 10.000 m²
+    fluchtweg_max_laenge_m: 35
+    fluchtweg_breite_min_m: 1.2
+    anzahl_ausgaenge_min: 2
+
+  logistik:
+    materialfluss_max_laenge_m: 150  # WE → Versand (Prozesspfad)
+    andockstellen_we_min: 2
+    andockstellen_versand_min: 2
+    rampenbreite_min_m: 4.0
+
+  zonentrennung:
+    buero_ausserhalb_logistikfluss: true   # Büro darf nicht Hauptlogistikzone kreuzen
+    technik_an_aussenwand: true            # Technik an Außenfassade (Wartungszugang)
+    qs_zwischen_produktion_versand: true   # QS muss zwischen Produktion und Versand liegen
+
+  erweiterbarkeit:
+    freie_ostfassade_min_pct: 0.30  # Mind. 30 % der Ostfassade frei halten
+
+
+# ============================================================
+# TYP 2: LOGISTIK
+# ============================================================
+logistik:
+
+  tragwerk:
+    raster_standard_x_m: 24
+    raster_standard_y_m: 12
+    raster_hochregal_x_m: 24
+    raster_hochregal_y_m: 12
+    traufhoehe_standard_m: 10.0
+    lichte_raumhoehe_m: 10.0
+    traufhoehe_hochregal_m: 18.0
+
+  brandschutz:
+    brandabschnitt_max_m2: 10000   # Mit Sprinkleranlage
+    fluchtweg_max_laenge_m: 35
+    fluchtweg_breite_min_m: 1.2
+    anzahl_ausgaenge_min: 4        # Größere Hallen benötigen mehr Ausgänge
+
+  logistik:
+    andockstellen_we_min: 4
+    andockstellen_versand_min: 6
+    rampenbreite_min_m: 4.5
+    rangierflaeche_tiefe_m: 35     # Freifläche vor Rampen für LKW-Manöver
+    quergangbreite_min_m: 4.0      # Fahrgas­sen zwischen Lagerblöcken
+
+  zonentrennung:
+    buero_getrennt_von_logistik: true
+    retouren_getrennt_von_versand: true
+    kommissionierung_nah_an_lager: true
+
+  erweiterbarkeit:
+    freie_ostfassade_min_pct: 0.40  # Logistik braucht mehr Erweiterungsreserve
+
+
+# ============================================================
+# TYP 3: DATA CENTER
+# ============================================================
+data_center:
+
+  tragwerk:
+    raster_standard_x_m: 12
+    raster_standard_y_m: 12
+    traufhoehe_min_m: 4.5
+    lichte_raumhoehe_m: 4.5
+    bodenbelastung_min_kn_m2: 12.0   # Für Server-Racks
+    doppelboden_hoehe_mm: 600
+
+  redundanz:
+    tier_iii_n_plus_1: true
+    externe_stromanbindung_min: 2    # Mind. 2 unabhängige Einspeisepunkte
+    usv_redundanz: "N+1"
+    kuehlung_redundanz: "N+1"
+
+  sicherheit:
+    perimeter_abstand_min_m: 6.0    # Sicherheitsabstand zum Zaun
+    sicherheitsschleuse: true        # Mantrap / Airlock erforderlich
+    zutrittszonen_min: 3             # Öffentlich / Restricted / Secure
+
+  kuehlung:
+    kuehlaggregate_an_aussenwand: true   # Chiller / CRAC-Einheiten an Außenwand
+    pue_zielwert_max: 1.5                # Power Usage Effectiveness
+    mindestabstand_kuehlung_it_m: 3.0
+
+  infrastruktur:
+    trafostation_an_aussenwand: true
+    notstrom_ausserhalb_whitespace: true
+    kabeltrasse_erhoeht: true            # Kabelführung über Doppelboden oder Hängetrasse
+
+  erweiterbarkeit:
+    modulares_wachstum: true
+    erweiterungs_richtung: "Ost"
+    freie_ostfassade_min_pct: 0.50   # DC-Module benötigen volle freie Ostfassade

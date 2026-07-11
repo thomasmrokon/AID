@@ -1,0 +1,42 @@
+# Baukosten-Richtwerte für Industriebau (Brutto, inkl. TGA, ohne Grundstück)
+# Quelle: Schätzwerte, Kostenkennwerte BKI 2024
+
+din_kategorien:
+  NUF 2:   # Büro / Verwaltung
+    min_eur_m2: 1400
+    mid_eur_m2: 1800
+    max_eur_m2: 2300
+  NUF 3:   # Produktion / Fertigung
+    min_eur_m2: 1100
+    mid_eur_m2: 1400
+    max_eur_m2: 1900
+  NUF 4:   # Lager / Logistik
+    min_eur_m2: 700
+    mid_eur_m2: 900
+    max_eur_m2: 1200
+  NUF 7:   # Sozialräume / Sanitär
+    min_eur_m2: 1200
+    mid_eur_m2: 1600
+    max_eur_m2: 2100
+  TF:      # Technikfläche
+    min_eur_m2: 900
+    mid_eur_m2: 1200
+    max_eur_m2: 1600
+  VF:      # Erschließung / Verkehrsfläche
+    min_eur_m2: 400
+    mid_eur_m2: 550
+    max_eur_m2: 750
+
+# Zuschläge (€/m² auf betroffene Zonen)
+zuschlaege:
+  kranbahn_nuf3:        180   # €/m² Produktionsfläche wenn Kranbahn
+  hochregal_nuf4:       280   # €/m² Lagerfläche wenn Hochregal (Gründung, Höhe)
+  mehrgeschossig:        90   # €/m² pro zusätzliches Obergeschoss (ab 2. OG)
+
+# Nebenkosten (Prozent der Baukosten KG 300+400)
+nebenkosten:
+  planung_honorar_pct:    0.13   # Architekten, Fachplaner (HOAI)
+  bauleitung_pct:         0.04
+  unvorhergesehenes_pct:  0.10
+  aussenanlagen_pct:      0.06   # Erschließung, Parking, Begrünung
+  baunebenkosten_pct:     0.05   # Genehmigung, Vermessung, Gutachten
