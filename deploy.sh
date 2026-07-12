@@ -80,6 +80,7 @@ EnvironmentFile=${APP_DIR}/.env
 ExecStart=${APP_DIR}/.venv/bin/streamlit run streamlit_app.py \\
     --server.port ${APP_PORT} \\
     --server.address 127.0.0.1 \\
+    --server.baseUrlPath app \\
     --server.headless true \\
     --browser.gatherUsageStats false
 Restart=on-failure
@@ -107,7 +108,20 @@ server {
     listen [::]:80;
     server_name ${DOMAIN} ${WWW_DOMAIN};
 
+    root ${APP_DIR}/web;
+    index index.html;
+
+    # Landingpage (Teaser) für alles außerhalb von /app/
     location / {
+        try_files \$uri \$uri/ =404;
+    }
+
+    location = /app {
+        return 301 /app/;
+    }
+
+    # AID-Login/App (Streamlit, läuft mit --server.baseUrlPath app)
+    location /app/ {
         proxy_pass http://127.0.0.1:${APP_PORT};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
@@ -140,9 +154,10 @@ log "Fertig"
 PUBLIC_IP="$(curl -fsS -m 5 https://ifconfig.me || echo '<server-ip>')"
 cat <<EOF
 
-Server läuft: http://${DOMAIN} (Port ${APP_PORT} intern via nginx-Proxy)
-Service:      systemctl status raumsyntax.service
-Logs:         journalctl -u raumsyntax.service -f
+Landingpage: http://${DOMAIN}
+AID-Login:   http://${DOMAIN}/app/  (Port ${APP_PORT} intern via nginx-Proxy)
+Service:     systemctl status raumsyntax.service
+Logs:        journalctl -u raumsyntax.service -f
 
 Nächste Schritte, falls noch offen:
   1. DNS: A-Record ${DOMAIN} und ${WWW_DOMAIN} -> ${PUBLIC_IP}

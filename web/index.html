@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AID – Augmented Industrial Design</title>
+<meta name="description" content="KI-gestützte Layout- und Prozessplanung für den Industriebau.">
+<style>
+  :root {
+    --bg: #0f1417;
+    --bg-elevated: #161d22;
+    --fg: #eef1f2;
+    --fg-muted: #a7b0b5;
+    --accent: #d97b4f;
+    --accent-fg: #16110d;
+    --border: #263039;
+    --max: 1080px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #faf8f5;
+      --bg-elevated: #ffffff;
+      --fg: #191512;
+      --fg-muted: #5c5450;
+      --accent: #c05f34;
+      --accent-fg: #ffffff;
+      --border: #e6ded4;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav.wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 18px; padding-bottom: 18px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; text-decoration: none; }
+  .brand .dot { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a.section-link { color: var(--fg-muted); text-decoration: none; font-size: 0.95rem; }
+  .nav-links a.section-link:hover { color: var(--fg); }
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: opacity 0.15s ease;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-ghost { border: 1px solid var(--border); color: var(--fg); }
+
+  .hero { padding: 96px 0 72px; }
+  .eyebrow {
+    color: var(--accent); font-weight: 600; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 22px;
+    max-width: 18ch;
+  }
+  .lede {
+    font-size: 1.15rem;
+    color: var(--fg-muted);
+    max-width: 56ch;
+    margin: 0 0 36px;
+  }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  section { padding: 64px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 1.7rem; letter-spacing: -0.01em; margin: 0 0 12px; }
+  .section-lede { color: var(--fg-muted); max-width: 60ch; margin: 0 0 40px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card h3 { font-size: 1.05rem; margin: 0 0 8px; }
+  .card p { color: var(--fg-muted); font-size: 0.92rem; margin: 0; }
+
+  .steps { display: flex; flex-direction: column; gap: 18px; counter-reset: step; }
+  .step { display: flex; gap: 18px; align-items: flex-start; }
+  .step .n {
+    counter-increment: step;
+    flex: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; color: var(--accent);
+  }
+  .step .n::before { content: counter(step); }
+  .step h3 { margin: 0 0 4px; font-size: 1rem; }
+  .step p { margin: 0; color: var(--fg-muted); font-size: 0.92rem; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0 48px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer a { color: var(--fg-muted); text-decoration: underline; text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="brand" href="/">AID<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a class="section-link" href="#funktionen">Funktionen</a>
+      <a class="section-link" href="#ablauf">Ablauf</a>
+      <a class="btn btn-primary" href="/app/">Login</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero wrap" style="border-top:none;">
+    <div class="eyebrow">Augmented Industrial Design</div>
+    <h1>KI-gestützte Layoutplanung für den Industriebau.</h1>
+    <p class="lede">
+      AID übersetzt Nutzungsanforderungen automatisch in geprüfte Grundriss- und
+      Masterplan-Varianten — von der ersten Bedarfsanalyse bis zur regelkonformen
+      Flächenoptimierung.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/app/">App starten</a>
+      <a class="btn btn-ghost" href="#funktionen">Mehr erfahren</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="funktionen">
+    <h2>Funktionen</h2>
+    <p class="section-lede">Ein durchgängiger Planungsworkflow, orchestriert über spezialisierte KI-Agenten.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Layoutplanung</h3>
+        <p>Automatisierte Zonierung und Grundrissoptimierung nach Typologie und Grundstück.</p>
+      </div>
+      <div class="card">
+        <h3>Masterplanung</h3>
+        <p>Lageplan, Erschließung und Baufeldaufteilung für das Gesamtareal.</p>
+      </div>
+      <div class="card">
+        <h3>Prozessplanung</h3>
+        <p>Materialfluss, Maschinenlayout und Produktionsabläufe als Grundlage der Zonierung.</p>
+      </div>
+      <div class="card">
+        <h3>Regelwerk-Prüfung</h3>
+        <p>Automatisiertes Scoring gegen Abstands-, Erschließungs- und Tragwerksregeln.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="ablauf">
+    <h2>Ablauf</h2>
+    <p class="section-lede">Drei Schritte von der Anforderung bis zum Ergebnis.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="n"></div>
+        <div>
+          <h3>Briefing erfassen</h3>
+          <p>Nutzungsanforderungen, Grundstück und Rahmenbedingungen eingeben.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n"></div>
+        <div>
+          <h3>Varianten berechnen</h3>
+          <p>AID generiert und bewertet mehrere Layout- und Masterplan-Varianten.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n"></div>
+        <div>
+          <h3>Ergebnis exportieren</h3>
+          <p>Grundriss, Lageplan und Kennzahlen als Bericht oder DXF-Export.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>Ein Projekt von Drees &amp; Sommer × Hochschule Mainz</span>
+  <span><a href="/app/">Zur App</a></span>
+</footer>
+
+</body>
+</html>
