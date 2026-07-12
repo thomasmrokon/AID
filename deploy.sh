@@ -37,8 +37,13 @@ command -v nginx >/dev/null 2>&1 || die \
   "nginx nicht gefunden. Installieren mit: apt-get update && apt-get install -y nginx"
 command -v git >/dev/null 2>&1 || die "git nicht gefunden. Installieren mit: apt-get install -y git"
 
+if systemctl list-unit-files raumsyntax.service >/dev/null 2>&1; then
+  log "Stoppe laufenden raumsyntax.service (für Redeploy)"
+  systemctl stop raumsyntax.service 2>/dev/null || true
+fi
+
 if ss -ltn 2>/dev/null | grep -q ":${APP_PORT} "; then
-  die "Port ${APP_PORT} ist bereits belegt. Anderen Port setzen: APP_PORT=xxxx ./deploy.sh"
+  die "Port ${APP_PORT} ist bereits belegt (von einem anderen Dienst). Anderen Port setzen: APP_PORT=xxxx ./deploy.sh"
 fi
 
 log "Lege Systemnutzer '${APP_USER}' an (falls nicht vorhanden)"
