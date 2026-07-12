@@ -85,7 +85,7 @@ EnvironmentFile=${APP_DIR}/.env
 ExecStart=${APP_DIR}/.venv/bin/streamlit run streamlit_app.py \\
     --server.port ${APP_PORT} \\
     --server.address 127.0.0.1 \\
-    --server.baseUrlPath app \\
+    --server.baseUrlPath aid \\
     --server.headless true \\
     --browser.gatherUsageStats false
 Restart=on-failure
@@ -116,17 +116,17 @@ server {
     root ${APP_DIR}/web;
     index index.html;
 
-    # Landingpage (Teaser) für alles außerhalb von /app/
+    # Landingpage (Teaser) für alles außerhalb von /aid/
     location / {
         try_files \$uri \$uri/ =404;
     }
 
-    location = /app {
-        return 301 /app/;
+    location = /aid {
+        return 301 /aid/;
     }
 
-    # AID-Login/App (Streamlit, läuft mit --server.baseUrlPath app)
-    location /app/ {
+    # AID-Login/App (Streamlit, läuft mit --server.baseUrlPath aid)
+    location /aid/ {
         proxy_pass http://127.0.0.1:${APP_PORT};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
@@ -160,7 +160,7 @@ PUBLIC_IP="$(curl -fsS -m 5 https://ifconfig.me || echo '<server-ip>')"
 cat <<EOF
 
 Landingpage: http://${DOMAIN}
-AID-Login:   http://${DOMAIN}/app/  (Port ${APP_PORT} intern via nginx-Proxy)
+AID-Login:   http://${DOMAIN}/aid/  (Port ${APP_PORT} intern via nginx-Proxy)
 Service:     systemctl status raumsyntax.service
 Logs:        journalctl -u raumsyntax.service -f
 
