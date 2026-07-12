@@ -7,166 +7,186 @@
 <meta name="description" content="raumsyntax entwickelt KI-Werkzeuge, die Entscheidungen im Planungsprozess sichtbar, nachvollziehbar und wiederverwendbar machen.">
 <style>
   :root {
-    --bg: #0f1417;
-    --bg-elevated: #161d22;
-    --fg: #eef1f2;
-    --fg-muted: #a7b0b5;
-    --accent: #d97b4f;
-    --accent-fg: #16110d;
-    --border: #263039;
-    --live: #6fae7f;
-    --soon: #a7b0b5;
-    --max: 1080px;
+    --accent-pink-dark: #D94F9F;
+    --accent-pink-light: #FDC5F6;
+    --accent-green-dark: #009E7F;
+    --accent-green-light: #15FFBC;
+    --text-dark: #222;
+    --text-light: #fff;
+    --text-grey-dark: #888;
+    --text-grey-light: #cccccc;
+    --text-grey-mid: #444;
+    --bg-dark: #1a1a1a;
+    --bg-light: #fff;
+    --bg-box-dark: #2a2a2a;
+    --bg-box-light: #f7f7f7;
+    --border-color: #333;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #faf8f5;
-      --bg-elevated: #ffffff;
-      --fg: #191512;
-      --fg-muted: #5c5450;
-      --accent: #c05f34;
-      --accent-fg: #ffffff;
-      --border: #e6ded4;
-      --live: #3f8a52;
-      --soon: #8a8078;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    color: var(--text-light);
+    background: var(--bg-dark);
+    font-size: 16px;
+    transition: background 0.3s, color 0.3s;
   }
   a { color: inherit; }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
 
-  header {
+  /* --- THEME SWITCH --- */
+  .theme-switch {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; user-select: none; color: var(--accent-pink-light);
+  }
+  .theme-switch .slider {
+    width: 2.2em; height: 1.2em; background: #333; border-radius: 1em;
+    position: relative; display: inline-block; transition: background 0.3s;
+  }
+  .theme-switch .slider::before {
+    content: ""; position: absolute; left: 0.2em; top: 0.2em;
+    width: 0.8em; height: 0.8em; background: #fff; border-radius: 50%;
+    transition: transform 0.3s, background 0.3s; box-shadow: 0 0 2px #0002;
+  }
+  .theme-switch input[type="checkbox"] { display: none; }
+  .theme-switch input[type="checkbox"]:checked ~ .slider::before { transform: translateX(1em); }
+  .theme-switch .mode-label { min-width: 3.5em; text-align: left; }
+
+  /* --- HEADER / NAV --- */
+  header.top {
     position: sticky; top: 0; z-index: 10;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg-dark); border-bottom: 1px solid var(--border-color);
+    transition: background 0.3s;
   }
   nav.wrap {
     display: flex; align-items: center; justify-content: space-between;
-    padding-top: 18px; padding-bottom: 18px;
+    padding: 1.1rem 1rem;
   }
-  .brand { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; text-decoration: none; }
-  .brand .dot { color: var(--accent); }
-  .nav-links { display: flex; align-items: center; gap: 28px; }
-  .nav-links a.section-link { color: var(--fg-muted); text-decoration: none; font-size: 0.95rem; }
-  .nav-links a.section-link:hover { color: var(--fg); }
-  .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: opacity 0.15s ease;
+  .brand {
+    font-size: 1.15rem; font-weight: 300; letter-spacing: -0.01em;
+    text-decoration: none; color: var(--text-light);
   }
-  .btn:hover { opacity: 0.88; }
-  .btn-primary { background: var(--accent); color: var(--accent-fg); }
-  .btn-ghost { border: 1px solid var(--border); color: var(--fg); }
-  .btn-small { padding: 7px 14px; font-size: 0.85rem; border-radius: 7px; }
-  .btn-disabled { border: 1px solid var(--border); color: var(--fg-muted); cursor: default; }
-  .btn-disabled:hover { opacity: 1; }
+  .brand .dot { color: var(--accent-pink-light); }
+  .nav-links { display: flex; align-items: center; gap: 1.6rem; }
+  .nav-links a.section-link {
+    color: var(--text-grey-light); text-decoration: none; font-size: 0.95rem;
+  }
+  .nav-links a.section-link:hover { color: var(--accent-green-light); }
 
-  .hero { padding: 96px 0 56px; }
+  /* --- HERO --- */
+  .hero { padding: 4.5rem 0 3rem; }
   .eyebrow {
-    color: var(--accent); font-weight: 600; font-size: 0.85rem;
-    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;
+    color: var(--accent-pink-light); font-weight: 400; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.1rem;
   }
   h1 {
-    font-size: clamp(2.2rem, 5vw, 3.4rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    margin: 0 0 22px;
-    max-width: 20ch;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 300; line-height: 1.15; letter-spacing: -0.01em;
+    margin: 0 0 1.2rem; max-width: 20ch; color: var(--text-light);
   }
-  .lede {
-    font-size: 1.15rem;
-    color: var(--fg-muted);
-    max-width: 58ch;
-    margin: 0 0 36px;
-  }
-  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .lede { font-size: 1.1rem; color: var(--text-grey-light); max-width: 56ch; margin: 0 0 1.8rem; }
 
-  .bridge {
-    padding: 28px 0 64px;
-    color: var(--fg-muted);
-    font-size: 1.05rem;
-    max-width: 62ch;
+  .btn-link {
+    display: inline-block; color: var(--accent-green-light); text-decoration: none;
+    font-size: 1rem; border-bottom: 1px solid var(--accent-green-light); padding-bottom: 2px;
   }
+  .btn-link:hover { color: var(--accent-pink-light); border-color: var(--accent-pink-light); }
 
-  section { padding: 64px 0; border-top: 1px solid var(--border); }
-  h2 { font-size: 1.7rem; letter-spacing: -0.01em; margin: 0 0 12px; }
-  .section-lede { color: var(--fg-muted); max-width: 60ch; margin: 0 0 40px; }
-
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+  /* --- SECTIONS --- */
+  section.products { padding: 1rem 0 4rem; }
+  h2 {
+    font-size: 1.3rem; font-weight: 400; margin-bottom: 0.6rem;
+    color: var(--accent-green-light); border-left: 3px solid var(--accent-green-light);
+    padding-left: 1rem;
   }
+  .section-lede { color: var(--text-grey-light); max-width: 60ch; margin: 0.6rem 0 2rem 1rem; }
+
+  .product-grid { display: flex; flex-direction: column; gap: 1rem; }
   .product-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    background: var(--bg-box-dark); padding: 1.4rem; border-radius: 4px;
+    border-left: 3px solid var(--accent-green-light);
   }
-  .product-card.placeholder { justify-content: center; align-items: flex-start; opacity: 0.7; border-style: dashed; }
-  .product-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .product-head h3 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
+  .product-card.placeholder { border-left-color: var(--border-color); opacity: 0.65; }
+  .product-head { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.3rem; }
+  .product-head h3 { font-size: 1.1rem; font-weight: 500; color: var(--accent-green-light); margin: 0; }
   .badge {
-    font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-    padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 8px; border-radius: 999px; white-space: nowrap;
   }
-  .badge-live { color: var(--live); border: 1px solid var(--live); }
-  .badge-soon { color: var(--soon); border: 1px solid var(--border); }
-  .product-tagline { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin: -8px 0 0; }
-  .product-card p.desc { color: var(--fg-muted); font-size: 0.95rem; margin: 0; flex-grow: 1; }
+  .badge-live { color: var(--accent-green-light); border: 1px solid var(--accent-green-light); }
+  .badge-soon { color: var(--text-grey-dark); border: 1px solid var(--border-color); }
+  .product-tagline { font-size: 0.82rem; color: var(--accent-pink-light); font-weight: 500; margin-bottom: 0.5rem; }
+  .product-card p.desc { color: var(--text-grey-light); font-size: 0.98rem; margin-bottom: 0.6rem; }
+  .product-card a.cta { color: var(--accent-pink-light); text-decoration: none; font-size: 0.95rem; }
+  .product-card a.cta:hover { color: var(--accent-green-light); text-decoration: underline; }
 
+  /* --- FOOTER --- */
   footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 0 48px;
-    color: var(--fg-muted);
-    font-size: 0.85rem;
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    text-align: center; margin-top: 2rem; padding: 2rem 1rem 2.5rem;
+    border-top: 1px solid var(--border-color); color: var(--text-grey-dark); font-size: 0.9rem;
   }
-  footer a { color: var(--fg-muted); text-decoration: underline; text-underline-offset: 2px; }
-  .footer-links { display: flex; gap: 16px; }
+  footer a { color: var(--text-grey-dark); text-decoration: none; }
+  footer a:hover { color: var(--accent-green-light); }
+  footer .legal { margin-bottom: 0.6rem; }
+  footer .project-line { font-size: 0.85rem; margin-bottom: 0.6rem; }
+
+  /* --- LIGHT MODE --- */
+  body.light-mode { background: var(--bg-light); color: var(--text-dark); }
+  body.light-mode header.top { background: var(--bg-light); }
+  body.light-mode .brand { color: var(--text-dark); }
+  body.light-mode h1 { color: var(--text-dark); }
+  body.light-mode .lede,
+  body.light-mode .section-lede,
+  body.light-mode .nav-links a.section-link,
+  body.light-mode .product-card p.desc { color: var(--text-grey-mid); }
+  body.light-mode .eyebrow,
+  body.light-mode .product-tagline { color: var(--accent-pink-dark); }
+  body.light-mode h2,
+  body.light-mode .product-head h3 { color: var(--accent-green-dark); border-left-color: var(--accent-green-dark); }
+  body.light-mode .btn-link,
+  body.light-mode .product-card a.cta { color: var(--accent-green-dark); }
+  body.light-mode .btn-link:hover,
+  body.light-mode .product-card a.cta:hover { color: var(--accent-pink-dark); }
+  body.light-mode .product-card { background: var(--bg-box-light); border-left-color: var(--accent-green-dark); }
+  body.light-mode .product-card.placeholder { border-left-color: var(--border-color); }
+  body.light-mode .badge-live { color: var(--accent-green-dark); border-color: var(--accent-green-dark); }
+  body.light-mode footer { color: var(--text-grey-mid); }
+  body.light-mode footer a { color: var(--text-grey-mid); }
+  body.light-mode footer a:hover { color: var(--accent-green-dark); }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+  }
 </style>
 </head>
 <body>
 
-<header>
+<header class="top">
   <nav class="wrap">
     <a class="brand" href="/">raumsyntax<span class="dot">.</span></a>
     <div class="nav-links">
       <a class="section-link" href="#produkte">Produkte</a>
+      <label class="theme-switch">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+        <span class="mode-label">Dunkel</span>
+      </label>
     </div>
   </nav>
 </header>
 
-<main>
-  <section class="hero wrap" style="border-top:none;">
+<main class="wrap">
+  <section class="hero">
     <div class="eyebrow">raumsyntax</div>
     <h1>KI-Werkzeuge für räumliche Entscheidungen.</h1>
     <p class="lede">
       Wir übersetzen Anforderungen, Regeln und Präferenzen in nachvollziehbare,
       wiederverwendbare Entwurfslogik — als Werkzeuge für Planung und Architektur.
     </p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#produkte">Produkte entdecken</a>
-    </div>
+    <a class="btn-link" href="#produkte">→ Produkte entdecken</a>
   </section>
 
-  <section class="wrap" id="produkte" style="border-top:none; padding-top:0;">
+  <section class="products" id="produkte">
     <h2>Produkte</h2>
     <p class="section-lede">raumsyntax liest Beziehungen im Raum. AID übersetzt sie in Grundrisse. DNA macht die Entscheidungen dahinter sichtbar.</p>
     <div class="product-grid">
@@ -181,7 +201,7 @@
           KI-gestützte Layout- und Prozessplanung für den Industriebau — von der
           Bedarfsanalyse bis zur regelkonformen Flächenoptimierung.
         </p>
-        <a class="btn btn-primary btn-small" href="/aid/">App starten</a>
+        <a class="cta" href="/aid/">→ App starten</a>
       </div>
 
       <div class="product-card">
@@ -194,24 +214,47 @@
           Die Entscheidungslogik hinter dem Entwurf — messbar, nachvollziehbar,
           wiederverwendbar.
         </p>
-        <a class="btn btn-disabled btn-small" href="mailto:mail@mrokon.de?subject=Interesse%20an%20DNA">Interesse? Kontakt</a>
+        <a class="cta" href="mailto:mail@mrokon.de?subject=Interesse%20an%20DNA">→ Interesse? Kontakt</a>
       </div>
 
       <div class="product-card placeholder">
-        <p class="desc">Weitere Tools in Entwicklung.</p>
+        <p class="desc" style="margin:0;">Weitere Tools in Entwicklung.</p>
       </div>
 
     </div>
   </section>
 </main>
 
-<footer class="wrap">
-  <span>Ein Projekt von Drees &amp; Sommer × Hochschule Mainz</span>
-  <span class="footer-links">
-    <a href="/impressum.html">Impressum</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-  </span>
+<footer>
+  <p class="legal"><a href="/impressum.html">Impressum</a> • <a href="/datenschutz.html">Datenschutz</a></p>
+  <p class="project-line">Ein Projekt von Drees &amp; Sommer × Hochschule Mainz</p>
+  <p>© 2026 raumsyntax — Prof. Thomas J. Mrokon</p>
 </footer>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  const body = document.body;
+  const modeLabel = document.querySelector('.mode-label');
+
+  function setLightMode() {
+    body.classList.add('light-mode');
+    modeLabel.textContent = 'Hell';
+    localStorage.setItem('theme', 'light');
+  }
+  function setDarkMode() {
+    body.classList.remove('light-mode');
+    modeLabel.textContent = 'Dunkel';
+    localStorage.setItem('theme', 'dark');
+  }
+  toggle.addEventListener('change', function () {
+    this.checked ? setLightMode() : setDarkMode();
+  });
+
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { toggle.checked = true; setLightMode(); }
+  else if (saved === 'dark') { toggle.checked = false; setDarkMode(); }
+  else if (window.matchMedia('(prefers-color-scheme: light)').matches) { toggle.checked = true; setLightMode(); }
+</script>
 
 </body>
 </html>

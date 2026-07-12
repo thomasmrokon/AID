@@ -7,30 +7,39 @@
 <meta name="robots" content="noindex">
 <style>
   :root {
-    --bg: #0f1417; --bg-elevated: #161d22; --fg: #eef1f2; --fg-muted: #a7b0b5;
-    --accent: #d97b4f; --border: #263039; --max: 720px;
+    --accent-pink-dark: #D94F9F; --accent-pink-light: #FDC5F6;
+    --accent-green-dark: #009E7F; --accent-green-light: #15FFBC;
+    --text-dark: #222; --text-light: #fff;
+    --text-grey-dark: #888; --text-grey-light: #cccccc; --text-grey-mid: #444;
+    --bg-dark: #1a1a1a; --bg-light: #fff;
+    --bg-box-dark: #2a2a2a; --bg-box-light: #f7f7f7;
+    --border-color: #333;
   }
-  @media (prefers-color-scheme: light) {
-    :root { --bg: #faf8f5; --bg-elevated: #ffffff; --fg: #191512; --fg-muted: #5c5450; --accent: #c05f34; --border: #e6ded4; }
-  }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg); color: var(--fg); margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
+    background: var(--bg-dark); color: var(--text-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6; transition: background 0.3s, color 0.3s;
   }
-  a { color: var(--accent); }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 48px 24px 80px; }
-  .back { color: var(--fg-muted); text-decoration: none; font-size: 0.9rem; }
-  h1 { font-size: 1.8rem; letter-spacing: -0.01em; margin: 28px 0 32px; }
-  h2 { font-size: 1.1rem; margin: 32px 0 8px; }
-  p, li { color: var(--fg-muted); margin: 0 0 8px; }
-  ul { margin: 0 0 8px; padding-left: 20px; }
-  section + section { border-top: 1px solid var(--border); padding-top: 8px; }
+  a { color: var(--accent-green-light); }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  .back { color: var(--text-grey-light); text-decoration: none; font-size: 0.9rem; }
+  h1 { color: var(--accent-green-light); font-size: 2rem; font-weight: 300; margin: 1.6rem 0 1.5rem; }
+  h2 { color: var(--accent-pink-light); font-size: 1.15rem; font-weight: 400; margin-top: 2rem; margin-bottom: 0.5rem; }
+  p, li { color: var(--text-grey-light); margin-bottom: 0.5rem; }
+  ul { margin: 0 0 0.5rem 1.2rem; }
+  section + section { margin-top: 0.5rem; }
+
+  body.light-mode { background: var(--bg-light); color: var(--text-dark); }
+  body.light-mode a { color: var(--accent-green-dark); }
+  body.light-mode .back { color: var(--text-grey-mid); }
+  body.light-mode h1 { color: var(--accent-green-dark); }
+  body.light-mode h2 { color: var(--accent-pink-dark); }
+  body.light-mode p, body.light-mode li { color: var(--text-grey-mid); }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="container">
   <a class="back" href="/">&larr; zurück</a>
   <h1>Datenschutzerklärung</h1>
 
@@ -58,8 +67,10 @@
     <h2>Cookies</h2>
     <p>
       Für den Login-Bereich (AID) wird ein technisch notwendiges Session-Cookie gesetzt, um den
-      Anmeldestatus zu speichern. Es werden keine Tracking- oder Marketing-Cookies eingesetzt.
-      Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Nutzung des Login-Bereichs).
+      Anmeldestatus zu speichern. Zusätzlich speichert diese Website die Hell/Dunkel-Einstellung lokal
+      im Browser (localStorage), ohne Cookie und ohne Datenübertragung an den Server. Es werden keine
+      Tracking- oder Marketing-Cookies eingesetzt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO
+      (Nutzung des Login-Bereichs).
     </p>
   </section>
 
@@ -99,5 +110,11 @@
     </p>
   </section>
 </div>
+<script>
+  if (localStorage.getItem('theme') === 'light' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.body.classList.add('light-mode');
+  }
+</script>
 </body>
 </html>
