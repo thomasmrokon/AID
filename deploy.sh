@@ -23,8 +23,16 @@ die() { printf '\n\033[1;31mERROR: %s\033[0m\n' "$1" >&2; exit 1; }
 [[ $EUID -eq 0 ]] || die "Bitte als root ausführen (sudo ./deploy.sh)."
 
 log "Prüfe Systemvoraussetzungen"
-command -v python3.11 >/dev/null 2>&1 || die \
-  "python3.11 nicht gefunden. Installieren mit: apt-get update && apt-get install -y python3.11 python3.11-venv"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+command -v "$PYTHON_BIN" >/dev/null 2>&1 || die \
+  "${PYTHON_BIN} nicht gefunden. Installieren mit: apt-get update && apt-get install -y python3"
+PY_VER="$("$PYTHON_BIN" -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+PY_MAJOR="${PY_VER%%.*}"; PY_MINOR="${PY_VER##*.}"
+if [[ "$PY_MAJOR" -lt 3 || ( "$PY_MAJOR" -eq 3 && "$PY_MINOR" -lt 11 ) ]]; then
+  die "Python >=3.11 erforderlich, gefunden: ${PY_VER} (${PYTHON_BIN}). Anderen Interpreter setzen mit PYTHON_BIN=python3.xx"
+fi
+"$PYTHON_BIN" -m venv --help >/dev/null 2>&1 || die \
+  "${PYTHON_BIN} -m venv nicht verfügbar. Installieren mit: apt-get update && apt-get install -y python3-venv"
 command -v nginx >/dev/null 2>&1 || die \
   "nginx nicht gefunden. Installieren mit: apt-get update && apt-get install -y nginx"
 command -v git >/dev/null 2>&1 || die "git nicht gefunden. Installieren mit: apt-get install -y git"
@@ -47,7 +55,7 @@ else
 fi
 
 log "Erstelle/aktualisiere Python-venv und installiere Abhängigkeiten"
-sudo -u "$APP_USER" python3.11 -m venv "${APP_DIR}/.venv"
+sudo -u "$APP_USER" "$PYTHON_BIN" -m venv "${APP_DIR}/.venv"
 sudo -u "$APP_USER" "${APP_DIR}/.venv/bin/pip" install --upgrade pip --quiet
 sudo -u "$APP_USER" "${APP_DIR}/.venv/bin/pip" install --quiet "${APP_DIR}" streamlit
 
