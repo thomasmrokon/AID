@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# Deploy AID (Streamlit) on a Debian/Ubuntu root server behind nginx + Let's Encrypt.
+# Deploy AID (Streamlit) + the raumsyntax-web landing page on a Debian/Ubuntu
+# root server behind nginx + Let's Encrypt. nginx serves the landing page
+# (thomasmrokon/raumsyntax-web) at DOMAIN/ and proxies DOMAIN/aid/ to the
+# AID Streamlit app (this repo).
 #
 # Usage: run as root on the target server.
 #   DOMAIN=raumsyntax.de EMAIL=you@example.com ./deploy.sh
@@ -15,6 +18,9 @@ APP_DIR="${APP_DIR:-/opt/raumsyntax}"
 APP_PORT="${APP_PORT:-8501}"
 REPO_URL="${REPO_URL:-https://github.com/thomasmrokon/AID.git}"
 BRANCH="${BRANCH:-main}"
+WEB_DIR="${WEB_DIR:-/opt/raumsyntax-web}"
+WEB_REPO_URL="${WEB_REPO_URL:-https://github.com/thomasmrokon/raumsyntax-web.git}"
+WEB_BRANCH="${WEB_BRANCH:-main}"
 ENABLE_TLS="${ENABLE_TLS:-0}"                          # set to 1 to also run certbot
 
 log() { printf '\n\033[1;32m==> %s\033[0m\n' "$1"; }
@@ -57,6 +63,16 @@ else
   mkdir -p "$APP_DIR"
   chown "$APP_USER":"$APP_USER" "$APP_DIR"
   sudo -u "$APP_USER" git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
+fi
+
+log "Hole/aktualisiere Landingpage-Code in ${WEB_DIR}"
+if [[ -d "${WEB_DIR}/.git" ]]; then
+  sudo -u "$APP_USER" git -C "$WEB_DIR" fetch origin "$WEB_BRANCH"
+  sudo -u "$APP_USER" git -C "$WEB_DIR" reset --hard "origin/${WEB_BRANCH}"
+else
+  mkdir -p "$WEB_DIR"
+  chown "$APP_USER":"$APP_USER" "$WEB_DIR"
+  sudo -u "$APP_USER" git clone --branch "$WEB_BRANCH" "$WEB_REPO_URL" "$WEB_DIR"
 fi
 
 log "Erstelle/aktualisiere Python-venv und installiere Abhängigkeiten"
@@ -121,7 +137,7 @@ server {
     listen [::]:80;
     server_name ${DOMAIN} ${WWW_DOMAIN};
 
-    root ${APP_DIR}/web;
+    root ${WEB_DIR};
     index index.html;
 
     # Landingpage (Teaser) für alles außerhalb von /aid/
@@ -167,7 +183,7 @@ log "Fertig"
 PUBLIC_IP="$(curl -fsS -m 5 https://ifconfig.me || echo '<server-ip>')"
 cat <<EOF
 
-Landingpage: http://${DOMAIN}
+Landingpage: http://${DOMAIN}  (aus ${WEB_DIR}, Repo: ${WEB_REPO_URL})
 AID-Login:   http://${DOMAIN}/aid/  (Port ${APP_PORT} intern via nginx-Proxy)
 Service:     systemctl status raumsyntax.service
 Logs:        journalctl -u raumsyntax.service -f
