@@ -1,7 +1,9 @@
 cookie:
   expiry_days: 1
-  key: aid_demo_secret_key_2024
   name: aid_demo_cookie
+  # Der Signierschlüssel kommt aus der Umgebungsvariable AID_COOKIE_KEY
+  # (siehe streamlit_app.py) und wird bewusst NICHT hier eingetragen,
+  # da diese Datei öffentlich im Repo liegt.
 credentials:
   usernames:
     admin:

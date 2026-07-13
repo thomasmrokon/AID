@@ -71,6 +71,14 @@ if [[ ! -f "${APP_DIR}/.env" ]]; then
   echo "  -> vim ${APP_DIR}/.env"
 fi
 
+if ! grep -q "^AID_COOKIE_KEY=..*" "${APP_DIR}/.env" 2>/dev/null; then
+  log "Generiere zufälligen AID_COOKIE_KEY in .env"
+  _cookie_key="$("$PYTHON_BIN" -c 'import secrets; print(secrets.token_hex(32))')"
+  sed -i '/^AID_COOKIE_KEY=/d' "${APP_DIR}/.env"
+  echo "AID_COOKIE_KEY=${_cookie_key}" >> "${APP_DIR}/.env"
+  chmod 600 "${APP_DIR}/.env"
+fi
+
 log "Erstelle systemd-Service raumsyntax.service"
 cat > /etc/systemd/system/raumsyntax.service <<EOF
 [Unit]

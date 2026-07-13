@@ -44,10 +44,17 @@ _USERS_YAML = Path(__file__).parent / "app" / "data" / "users.yaml"
 with open(_USERS_YAML, encoding="utf-8") as _f:
     _auth_config = yaml.safe_load(_f)
 
+_cookie_key = os.getenv("AID_COOKIE_KEY")
+if not _cookie_key:
+    raise RuntimeError(
+        "AID_COOKIE_KEY ist nicht gesetzt. Zufälligen Wert in .env eintragen, z. B. mit:\n"
+        "  python3 -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+
 _authenticator = stauth.Authenticate(
     _auth_config["credentials"],
     _auth_config["cookie"]["name"],
-    _auth_config["cookie"]["key"],
+    _cookie_key,
     _auth_config["cookie"]["expiry_days"],
 )
 

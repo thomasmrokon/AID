@@ -41,8 +41,9 @@ config = {
     "credentials": credentials,
     "cookie": {
         "expiry_days": 1,
-        "key": "aid_demo_secret_key_2024",
         "name": "aid_demo_cookie",
+        # Kein Signierschlüssel hier - kommt aus AID_COOKIE_KEY (.env),
+        # siehe streamlit_app.py. Diese Datei liegt öffentlich im Repo.
     },
 }
 
